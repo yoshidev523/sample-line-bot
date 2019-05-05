@@ -19,5 +19,52 @@ server.listen(process.env.PORT || 3000);
 // ルーター設定
 server.post('/bot/webhook', line.middleware(line_config), (req, res, next) => {
     res.sendStatus(200);
+    // すべてのイベント処理のプロミスを格納する配列。
+    let events_processed = [];
+
+    // イベントオブジェクトを順次処理。
+    req.body.events.forEach((event) => {
+        // この処理の対象をイベントタイプがメッセージで、かつ、テキストタイプだった場合に限定。
+        if (event.type == "message" && event.message.type == "text") {
+            // ユーザーからのテキストメッセージが「こんにちは」だった場合のみ反応。
+            switch (event.message.text) {
+                case 'おはよう':
+                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
+                    events_processed.push(bot.replyMessage(event.replyToken, {
+                        type: "text",
+                        text: "おはよう！！"
+                    }));
+                    break;
+                case 'こんにちは':
+                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
+                    events_processed.push(bot.replyMessage(event.replyToken, {
+                        type: "text",
+                        text: "こんにちは！！"
+                    }));
+                    break;
+                case 'こんばんは':
+                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
+                    events_processed.push(bot.replyMessage(event.replyToken, {
+                        type: "text",
+                        text: "こんばんは！！"
+                    }));
+                    break;
+                default:
+                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
+                    events_processed.push(bot.replyMessage(event.replyToken, {
+                        type: "text",
+                        text: "「おはよう」「こんにちは」「こんばんは」というと反応するぜ"
+                    }));
+            }
+
+        }
+    });
+
+    // すべてのイベント処理が終了したら何個のイベントが処理されたか出力。
+    Promise.all(events_processed).then(
+        (response) => {
+            console.log(`${response.length} event(s) processed.`);
+        }
+    );
     console.log(req.body);
 });
