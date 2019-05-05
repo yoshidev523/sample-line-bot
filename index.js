@@ -28,35 +28,23 @@ server.post('/bot/webhook', line.middleware(line_config), (req, res, next) => {
         // この処理の対象をイベントタイプがメッセージで、かつ、テキストタイプだった場合に限定。
         if (event.type == "message" && event.message.type == "text") {
             // ユーザーからのテキストメッセージが「こんにちは」だった場合のみ反応。
+            let text = "「おはよう」「こんにちは」「こんばんは」と言うと反応するぜ";
             switch (event.message.text) {
                 case 'おはよう':
-                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
-                    events_processed.push(bot.replyMessage(event.replyToken, {
-                        type: "text",
-                        text: "おはよう！！"
-                    }));
+                    text = "おはよう！！"
                     break;
                 case 'こんにちは':
-                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
-                    events_processed.push(bot.replyMessage(event.replyToken, {
-                        type: "text",
-                        text: "こんにちは！！"
-                    }));
+                    text = "こんにちは！！"
                     break;
                 case 'こんばんは':
-                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
-                    events_processed.push(bot.replyMessage(event.replyToken, {
-                        type: "text",
-                        text: "こんばんは！！"
-                    }));
+                    text = "こんばんは！！"
                     break;
-                default:
-                    // replyMessage()で返信し、そのプロミスをevents_processedに追加。
-                    events_processed.push(bot.replyMessage(event.replyToken, {
-                        type: "text",
-                        text: "「おはよう」「こんにちは」「こんばんは」と言うと反応するぜ"
-                    }));
             }
+            // replyMessage()で返信し、そのプロミスをevents_processedに追加。
+            events_processed.push(bot.replyMessage(event.replyToken, {
+                type: "text",
+                text: text
+            }));
 
         }
     });
